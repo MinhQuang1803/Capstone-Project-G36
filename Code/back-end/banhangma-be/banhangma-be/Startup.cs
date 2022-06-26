@@ -66,7 +66,7 @@ namespace banhangma_be
             }
 
             app.UseHttpsRedirection();
-
+            app.UseStaticFiles();
             app.UseRouting();
             app.UseCors(builder => builder
      .AllowAnyOrigin()

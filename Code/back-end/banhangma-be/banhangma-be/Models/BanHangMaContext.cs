@@ -6,7 +6,6 @@ namespace banhangma_be.Models
 {
     public partial class BanHangMaContext : DbContext
     {
-
         public BanHangMaContext(DbContextOptions<BanHangMaContext> options)
             : base(options)
         {
@@ -14,12 +13,14 @@ namespace banhangma_be.Models
 
         public virtual DbSet<CartNote> CartNote { get; set; }
         public virtual DbSet<Carts> Carts { get; set; }
+        public virtual DbSet<Colors> Colors { get; set; }
         public virtual DbSet<OrderDetail> OrderDetail { get; set; }
         public virtual DbSet<OrderDetailComment> OrderDetailComment { get; set; }
         public virtual DbSet<OrderDetailNote> OrderDetailNote { get; set; }
         public virtual DbSet<OrderHistory> OrderHistory { get; set; }
         public virtual DbSet<Orders> Orders { get; set; }
         public virtual DbSet<ProductCategory> ProductCategory { get; set; }
+        public virtual DbSet<ProductColors> ProductColors { get; set; }
         public virtual DbSet<ProductPrice> ProductPrice { get; set; }
         public virtual DbSet<ProductSize> ProductSize { get; set; }
         public virtual DbSet<Products> Products { get; set; }
@@ -83,6 +84,28 @@ namespace banhangma_be.Models
                     .WithMany(p => p.Carts)
                     .HasForeignKey(d => d.Userid)
                     .HasConstraintName("FK_Carts_Users");
+            });
+
+            modelBuilder.Entity<Colors>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.CreatedBy).HasColumnName("createdBy");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnName("createdDate")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.UpdatedBy).HasColumnName("updatedBy");
+
+                entity.Property(e => e.UpdatedDate)
+                    .HasColumnName("updatedDate")
+                    .HasColumnType("datetime");
             });
 
             modelBuilder.Entity<OrderDetail>(entity =>
@@ -262,6 +285,10 @@ namespace banhangma_be.Models
                     .HasColumnType("datetime")
                     .HasDefaultValueSql("(getdate())");
 
+                entity.Property(e => e.Image)
+                    .HasColumnName("image")
+                    .HasMaxLength(500);
+
                 entity.Property(e => e.Name)
                     .HasColumnName("name")
                     .HasMaxLength(500);
@@ -271,6 +298,15 @@ namespace banhangma_be.Models
                 entity.Property(e => e.UpdatedDate)
                     .HasColumnName("updatedDate")
                     .HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<ProductColors>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.ColorId).HasColumnName("colorId");
+
+                entity.Property(e => e.ProductId).HasColumnName("productId");
             });
 
             modelBuilder.Entity<ProductPrice>(entity =>
