@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using banhangma_be.Models;
 using Microsoft.AspNetCore.Authorization;
- 
+using banhangma_be.Models.Product;
+
 namespace banhangma_be.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
@@ -23,26 +23,37 @@ namespace banhangma_be.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Products>>> GetProductsPage(bool? inStock, int? skip, int? take)
+        [Route("GetProductsHome")]
+        public async Task<ActionResult<IEnumerable<ProductList>>> GetProductsHome(int count)
         {
-            var products = _context.Products.AsQueryable();
+            var res = from a in _context.Products
+                      where a.IsDeleted == false
+                      select new ProductList()
+                      {
+                          Id = a.Id,
+                          Name = a.Name,
+                          Images = a.Images,
+                          Price = _context.ProductPrice.Where(c => c.ProductId == a.Id).FirstOrDefault().Price
+                      }
+                     ;
+            return res.Take(count).ToList();
+        }
 
-            //if (inStock != null) // Adds the condition to check availability 
-            //{
-            //    products = _context.Products.Where(i => i.Qua > 0);
-            //}
-
-            if (skip != null)
-            {
-                products = products.Skip((int)skip);
-            }
-
-            if (take != null)
-            {
-                products = products.Take((int)take);
-            }
-
-            return await products.ToListAsync();
+        [HttpGet]
+        [Route("GetProductsPage")]
+        public async Task<ActionResult<IEnumerable<ProductList>>> GetProductsPage(int categoryId)
+        {
+            var res = from a in _context.Products
+                      where a.IsDeleted == false && a.CategoryId == categoryId
+                      select new ProductList()
+                      {
+                          Id = a.Id,
+                          Name = a.Name,
+                          Images = a.Images,
+                          Price = _context.ProductPrice.Where(c => c.ProductId == a.Id).FirstOrDefault().Price
+                      }
+                     ;
+            return res.ToList();
         }
 
         [HttpGet]
@@ -54,9 +65,67 @@ namespace banhangma_be.Controllers
 
         // GET: api/Products/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Products>> GetProducts(int id)
+        [Route("GetProducts/{id}")]
+        public async Task<ActionResult<ProductDetail>> GetProducts(int id)
         {
-            var products = await _context.Products.FindAsync(id);
+            var res = from a in _context.Products
+                      join b in _context.ProductCategory on a.CategoryId equals b.Id
+                      where a.IsDeleted == false && a.Id == id
+                      select new ProductDetail()
+                      {
+                          Id = a.Id,
+                          Name = a.Name,
+                          Detail = a.Detail,
+                          CategoryId = a.CategoryId,
+                          CategoryName = b.Name,
+                          Height = a.Height,
+                          Long = a.Long,
+                          Width = a.Width,
+                          Images = a.Images,
+                      }
+                     ;
+            var products = await res.FirstOrDefaultAsync();
+
+            var price = from a in _context.ProductPrice
+                        join b in _context.ProductSize on a.SizeId equals b.Id
+                        where a.IsDeleted == false && a.ProductId == id
+                        select new ProductPriceDetail()
+                        {
+                            Id = a.Id,
+                            ProductId = a.ProductId,
+                            SizeId = a.SizeId,
+                            SizeName = b.Name,
+                            Price = a.Price,
+                        }
+                     ;
+            products.ProductPrice = price.ToList();
+
+            var productSameType = from a in _context.Products
+                                  where a.IsDeleted == false && a.CategoryId == products.CategoryId
+                                  select new ProductList()
+                                  {
+                                      Id = a.Id,
+                                      Name = a.Name,
+                                      Images = a.Images,
+                                      Price = _context.ProductPrice.Where(c => c.ProductId == a.Id).FirstOrDefault().Price
+                                  }
+                    ;
+
+            products.ProductsSameType = productSameType.Take(4).ToList();
+
+            var ProductColor = from a in _context.ProductColors
+                               join b in _context.Colors on a.ColorId equals b.Id
+                               where a.IsDeleted == false && a.ProductId == id
+                               select new ProductColorItem()
+                               {
+                                   Id = a.Id,
+                                   ProductId = a.ProductId,
+                                   ColorId = a.ColorId,
+                                   ColorName = b.Name
+                               }
+                   ;
+
+            products.ProductColor = ProductColor.ToList();
 
             if (products == null)
             {

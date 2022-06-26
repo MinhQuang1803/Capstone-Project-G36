@@ -3,13 +3,8 @@ using System.Collections.Generic;
 
 namespace banhangma_be.Models
 {
-    public partial class ProductCategory
+    public partial class Colors
     {
-        public ProductCategory()
-        {
-            Products = new HashSet<Products>();
-        }
-
         public int Id { get; set; }
         public string Name { get; set; }
         public bool IsDeleted { get; set; }
@@ -17,8 +12,5 @@ namespace banhangma_be.Models
         public int? CreatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public int? UpdatedBy { get; set; }
-        public string Image { get; set; }
-
-        public virtual ICollection<Products> Products { get; set; }
     }
 }
