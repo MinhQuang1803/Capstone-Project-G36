@@ -20,6 +20,8 @@ namespace banhangma_be.Models
         public int TotalNote { get; set; }
         public int Total { get; set; }
         public bool IsDeleted { get; set; }
+        public int? Colorid { get; set; }
+        public int? Sizeid { get; set; }
 
         public virtual Orders Order { get; set; }
         public virtual Products Product { get; set; }

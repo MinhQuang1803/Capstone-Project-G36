@@ -1,5 +1,6 @@
 ﻿using banhangma_be.Models;
 using banhangma_be.Models.User;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -20,18 +21,15 @@ namespace banhangma_be.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        [Authorize]
-        [Route("getUserByToken")]
-        public ActionResult<UserGetId> getUserByToken(string token)
-        {
+        [HttpGet("{id}")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Route("getUserByToken/{id}")]
+        public ActionResult<UserGetId> getUserByToken(int id)
+       {
             try
             {
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var securityToken = (JwtSecurityToken)tokenHandler.ReadToken(token);
-                var claimValue = securityToken.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
                 var res = from a in _context.Users
-                          where a.IsDeleted == false
+                          where a.IsDeleted == false && a.Id == id
                           select new UserGetId()
                           {
                               Id = a.Id,
@@ -53,6 +51,8 @@ namespace banhangma_be.Controllers
                 return null;
             }
         }
+
+
         [HttpPost]
         [Route("UserAdd")]
         public async Task<int> UserAdd(UserAdd data)

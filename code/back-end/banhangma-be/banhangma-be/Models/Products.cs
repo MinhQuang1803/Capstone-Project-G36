@@ -25,6 +25,8 @@ namespace banhangma_be.Models
         public DateTime? UpdatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public string Images { get; set; }
+        public decimal Capacity { get; set; }
+        public int? Companyid { get; set; }
 
         public virtual ProductCategory Category { get; set; }
         public virtual ICollection<Carts> Carts { get; set; }

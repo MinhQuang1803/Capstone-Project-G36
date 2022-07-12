@@ -14,6 +14,7 @@ namespace banhangma_be.Models.Product
         public decimal Long { get; set; }
         public decimal Width { get; set; }
         public string Images { get; set; }
+        public int? Companyid { get; set; }
         public List<ProductPriceDetail> ProductPrice { get; set; }
         public List<ProductList> ProductsSameType { get; set; }
         public List<ProductColorItem> ProductColor { get; set; }

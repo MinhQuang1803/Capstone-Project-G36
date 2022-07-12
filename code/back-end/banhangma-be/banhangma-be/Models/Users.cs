@@ -15,9 +15,6 @@ namespace banhangma_be.Models
         public string Username { get; set; }
         public string Password { get; set; }
         public string Fullname { get; set; }
-        public int? WardId { get; set; }
-        public int? DistrictId { get; set; }
-        public int? ProvinceId { get; set; }
         public string Address { get; set; }
         public int UserType { get; set; }
         public string Mobile { get; set; }
@@ -28,6 +25,10 @@ namespace banhangma_be.Models
         public int? CreatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
         public int? UpdatedBy { get; set; }
+        public string ProvinceId { get; set; }
+        public string DistrictId { get; set; }
+        public string WardId { get; set; }
+        public int? Companyid { get; set; }
 
         public virtual ICollection<Carts> Carts { get; set; }
         public virtual ICollection<Orders> Orders { get; set; }

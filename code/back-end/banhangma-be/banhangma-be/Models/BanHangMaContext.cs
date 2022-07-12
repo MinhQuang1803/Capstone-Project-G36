@@ -14,6 +14,7 @@ namespace banhangma_be.Models
         public virtual DbSet<CartNote> CartNote { get; set; }
         public virtual DbSet<Carts> Carts { get; set; }
         public virtual DbSet<Colors> Colors { get; set; }
+        public virtual DbSet<Companys> Companys { get; set; }
         public virtual DbSet<OrderDetail> OrderDetail { get; set; }
         public virtual DbSet<OrderDetailComment> OrderDetailComment { get; set; }
         public virtual DbSet<OrderDetailNote> OrderDetailNote { get; set; }
@@ -24,6 +25,7 @@ namespace banhangma_be.Models
         public virtual DbSet<ProductPrice> ProductPrice { get; set; }
         public virtual DbSet<ProductSize> ProductSize { get; set; }
         public virtual DbSet<Products> Products { get; set; }
+        public virtual DbSet<Trucks> Trucks { get; set; }
         public virtual DbSet<Users> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -49,6 +51,8 @@ namespace banhangma_be.Models
                 entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.Colorid).HasColumnName("colorid");
+
+                entity.Property(e => e.Companyid).HasColumnName("companyid");
 
                 entity.Property(e => e.CreatedBy).HasColumnName("createdBy");
 
@@ -111,9 +115,63 @@ namespace banhangma_be.Models
                     .HasColumnType("datetime");
             });
 
+            modelBuilder.Entity<Companys>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Address)
+                    .HasColumnName("address")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.Code)
+                    .HasColumnName("code")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.CreatedBy).HasColumnName("createdBy");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnName("createdDate")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.DistrictId)
+                    .HasColumnName("districtId")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.Email)
+                    .HasColumnName("email")
+                    .HasMaxLength(250)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Mobile)
+                    .HasColumnName("mobile")
+                    .HasMaxLength(20)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Name)
+                    .HasColumnName("name")
+                    .HasMaxLength(500);
+
+                entity.Property(e => e.ProvinceId)
+                    .HasColumnName("provinceId")
+                    .HasMaxLength(10);
+
+                entity.Property(e => e.UpdatedBy).HasColumnName("updatedBy");
+
+                entity.Property(e => e.UpdatedDate)
+                    .HasColumnName("updatedDate")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.WardId)
+                    .HasColumnName("wardId")
+                    .HasMaxLength(10);
+            });
+
             modelBuilder.Entity<OrderDetail>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Colorid).HasColumnName("colorid");
 
                 entity.Property(e => e.OrderId).HasColumnName("orderId");
 
@@ -124,6 +182,8 @@ namespace banhangma_be.Models
                 entity.Property(e => e.ProductId).HasColumnName("productId");
 
                 entity.Property(e => e.Quantity).HasColumnName("quantity");
+
+                entity.Property(e => e.Sizeid).HasColumnName("sizeid");
 
                 entity.Property(e => e.Total).HasColumnName("total");
 
@@ -183,9 +243,7 @@ namespace banhangma_be.Models
 
             modelBuilder.Entity<OrderHistory>(entity =>
             {
-                entity.Property(e => e.Id)
-                    .HasColumnName("id")
-                    .ValueGeneratedNever();
+                entity.Property(e => e.Id).HasColumnName("id");
 
                 entity.Property(e => e.CreatedBy).HasColumnName("createdBy");
 
@@ -220,6 +278,8 @@ namespace banhangma_be.Models
                     .HasColumnName("address")
                     .HasMaxLength(500);
 
+                entity.Property(e => e.Companyid).HasColumnName("companyid");
+
                 entity.Property(e => e.CreatedBy).HasColumnName("createdBy");
 
                 entity.Property(e => e.CreatedDate)
@@ -233,7 +293,9 @@ namespace banhangma_be.Models
 
                 entity.Property(e => e.DiscountMoney).HasColumnName("discountMoney");
 
-                entity.Property(e => e.DistrictId).HasColumnName("districtId");
+                entity.Property(e => e.DistrictId)
+                    .HasColumnName("districtId")
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.Email)
                     .HasColumnName("email")
@@ -245,9 +307,13 @@ namespace banhangma_be.Models
                     .HasMaxLength(20)
                     .IsFixedLength();
 
+                entity.Property(e => e.NoteMoney).HasColumnName("noteMoney");
+
                 entity.Property(e => e.ProductMoney).HasColumnName("productMoney");
 
-                entity.Property(e => e.ProvinceId).HasColumnName("provinceId");
+                entity.Property(e => e.ProvinceId)
+                    .HasColumnName("provinceId")
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.ReceiverName)
                     .HasColumnName("receiverName")
@@ -269,7 +335,9 @@ namespace banhangma_be.Models
 
                 entity.Property(e => e.Volume).HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.WardId).HasColumnName("wardId");
+                entity.Property(e => e.WardId)
+                    .HasColumnName("wardId")
+                    .HasMaxLength(10);
 
                 entity.HasOne(d => d.User)
                     .WithMany(p => p.Orders)
@@ -372,7 +440,13 @@ namespace banhangma_be.Models
             {
                 entity.Property(e => e.Id).HasColumnName("id");
 
+                entity.Property(e => e.Capacity)
+                    .HasColumnName("capacity")
+                    .HasColumnType("decimal(18, 2)");
+
                 entity.Property(e => e.CategoryId).HasColumnName("categoryId");
+
+                entity.Property(e => e.Companyid).HasColumnName("companyid");
 
                 entity.Property(e => e.CreatedBy).HasColumnName("createdBy");
 
@@ -417,6 +491,39 @@ namespace banhangma_be.Models
                     .HasConstraintName("FK_Products_ProductCategory");
             });
 
+            modelBuilder.Entity<Trucks>(entity =>
+            {
+                entity.Property(e => e.Id).HasColumnName("id");
+
+                entity.Property(e => e.Capacity)
+                    .HasColumnName("capacity")
+                    .HasColumnType("decimal(18, 2)");
+
+                entity.Property(e => e.CreatedBy).HasColumnName("createdBy");
+
+                entity.Property(e => e.CreatedDate)
+                    .HasColumnName("createdDate")
+                    .HasColumnType("datetime")
+                    .HasDefaultValueSql("(getdate())");
+
+                entity.Property(e => e.LicensePlate)
+                    .HasColumnName("licensePlate")
+                    .HasMaxLength(10)
+                    .IsFixedLength();
+
+                entity.Property(e => e.Price).HasColumnName("price");
+
+                entity.Property(e => e.Status).HasColumnName("status");
+
+                entity.Property(e => e.UpdatedBy).HasColumnName("updatedBy");
+
+                entity.Property(e => e.UpdatedDate)
+                    .HasColumnName("updatedDate")
+                    .HasColumnType("datetime");
+
+                entity.Property(e => e.Userid).HasColumnName("userid");
+            });
+
             modelBuilder.Entity<Users>(entity =>
             {
                 entity.Property(e => e.Id).HasColumnName("id");
@@ -424,6 +531,8 @@ namespace banhangma_be.Models
                 entity.Property(e => e.Address)
                     .HasColumnName("address")
                     .HasMaxLength(500);
+
+                entity.Property(e => e.Companyid).HasColumnName("companyid");
 
                 entity.Property(e => e.CreatedBy).HasColumnName("createdBy");
 
@@ -436,7 +545,9 @@ namespace banhangma_be.Models
                     .HasColumnName("discount")
                     .HasColumnType("decimal(18, 2)");
 
-                entity.Property(e => e.DistrictId).HasColumnName("districtId");
+                entity.Property(e => e.DistrictId)
+                    .HasColumnName("districtId")
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.Email)
                     .HasColumnName("email")
@@ -457,7 +568,9 @@ namespace banhangma_be.Models
                     .HasMaxLength(250)
                     .IsFixedLength();
 
-                entity.Property(e => e.ProvinceId).HasColumnName("provinceId");
+                entity.Property(e => e.ProvinceId)
+                    .HasColumnName("provinceId")
+                    .HasMaxLength(10);
 
                 entity.Property(e => e.UpdatedBy).HasColumnName("updatedBy");
 
@@ -474,7 +587,9 @@ namespace banhangma_be.Models
                     .HasMaxLength(50)
                     .IsFixedLength();
 
-                entity.Property(e => e.WardId).HasColumnName("wardId");
+                entity.Property(e => e.WardId)
+                    .HasColumnName("wardId")
+                    .HasMaxLength(10);
             });
 
             OnModelCreatingPartial(modelBuilder);
